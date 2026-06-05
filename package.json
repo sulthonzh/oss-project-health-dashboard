@@ -1,0 +1,52 @@
+{
+  "name": "oss-project-health-dashboard",
+  "version": "1.0.0",
+  "description": "One-command OSS project health analysis dashboard with bus factor, contributor diversity, response time, and sustainability metrics",
+  "main": "dist/index.js",
+  "bin": {
+    "oss-health-check": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs --external:commander,octokit,sqlite3,cli-table3,date-fns,chalk",
+    "dev": "tsup src/index.ts --format cjs --external:commander,octokit,sqlite3,cli-table3,date-fns,chalk --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "oss",
+    "open-source",
+    "health-check",
+    "dashboard",
+    "bus-factor",
+    "contributor-diversity",
+    "project-analytics",
+    "github-analysis",
+    "sustainability"
+  ],
+  "author": "Sulthonzh",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "@types/sqlite3": "^3.1.8",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
+    "eslint": "^8.47.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6",
+    "vitest": "^0.34.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
