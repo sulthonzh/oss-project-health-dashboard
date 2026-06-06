@@ -215,6 +215,63 @@ Long-term health indicators including contributor retention, backlog management,
 ### Security
 Dependency health, vulnerability detection, and license compliance assessment.
 
+## 🏢 Enterprise Features
+
+### Multi-Repo Analysis
+
+Analyze multiple repositories with consolidated reporting and threshold-based filtering:
+
+```bash
+oss-health-check-enterprise multi-repo repositories.txt \
+  --output dashboard \
+  --threshold 70 \
+  --include-trends \
+  --include-recommendations \
+  --export-format json \
+  --export-path ./reports/
+```
+
+Create a repository list file:
+
+```text
+# repositories.txt
+https://github.com/owner/repo1
+https://github.com/owner/repo2
+https://github.com/org/team-repo
+# Comment lines are ignored
+```
+
+### Continuous Monitoring
+
+Set up automated health monitoring with real-time alerts:
+
+```bash
+oss-health-check-enterprise monitor https://github.com/owner/critical-repo \
+  --interval 24 \
+  --threshold 70 \
+  --alert-slack https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+```
+
+### Benchmark Analysis
+
+Compare projects against industry standards and similar repositories:
+
+```bash
+oss-health-check-enterprise benchmark https://github.com/owner/my-project \
+  --category web-development \
+  --limit 10 \
+  --include-metrics bus-factor,diversity,response-time
+```
+
+### CI/CD Integration
+
+Automate deployment with GitHub Actions workflows:
+
+- Automated testing and security scanning
+- Multi-environment deployments
+- Version management and releases
+- Performance monitoring and alerts
+
 ## 🚀 Development
 
 ```bash
@@ -223,6 +280,20 @@ cd oss-project-health-dashboard
 npm install
 npm run build
 npm test
+npm run enterprise  # Test enterprise features
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test -- test/enterprise-cli.test.ts
 ```
 
 ## 📊 License
@@ -239,6 +310,7 @@ MIT License - see LICENSE file for details.
 
 ## 📈 Roadmap
 
+### Core Features
 - [ ] Web dashboard interface
 - [ ] GitHub App integration
 - [ ] Slack/Teams notifications
@@ -246,6 +318,16 @@ MIT License - see LICENSE file for details.
 - [ ] Custom metric definitions
 - [ ] Team collaboration features
 - [ ] Advanced security scanning
+
+### Enterprise Features
+- [ ] Multi-tenant support
+- [ ] Organization-wide health dashboards
+- [ ] Advanced alerting and notifications
+- [ ] API key management
+- [ ] SSO integration
+- [ ] Audit logging and compliance
+- [ ] Advanced reporting and analytics
+- [ ] Third-party integrations (Jira, GitLab, Bitbucket)
 
 ---
 
