@@ -1,5 +1,5 @@
 import { Octokit } from 'octokit';
-import { DateTime } from 'date-fns';
+import { format } from 'date-fns';
 
 export interface Repository {
   name: string;
@@ -103,12 +103,14 @@ export class GitHubClient {
   }
 
   async getIssues(owner: string, repo: string, months: number): Promise<Issue[]> {
-    const since = DateTime.now().subtract({ months }).toISOString();
+    const since = new Date();
+    since.setMonth(since.getMonth() - months);
+    const sinceISO = since.toISOString();
     
     const response = await this.octokit.rest.issues.listForRepo({
       owner,
       repo,
-      since,
+      since: sinceISO,
       state: 'all',
       per_page: 100
     });
@@ -130,12 +132,14 @@ export class GitHubClient {
   }
 
   async getPullRequests(owner: string, repo: string, months: number): Promise<PullRequest[]> {
-    const since = DateTime.now().subtract({ months }).toISOString();
+    const since = new Date();
+    since.setMonth(since.getMonth() - months);
+    const sinceISO = since.toISOString();
     
     const response = await this.octokit.rest.pulls.list({
       owner,
       repo,
-      since,
+      since: sinceISO,
       state: 'all',
       per_page: 100
     });
@@ -160,7 +164,9 @@ export class GitHubClient {
   }
 
   async getCommits(owner: string, repo: string, months: number): Promise<Commit[]> {
-    const since = DateTime.now().subtract({ months }).toISOString();
+    const since = new Date();
+    since.setMonth(since.getMonth() - months);
+    const sinceISO = since.toISOString();
     
     const response = await this.octokit.rest.repos.listCommits({
       owner,
@@ -181,11 +187,14 @@ export class GitHubClient {
   }
 
   async getContributors(owner: string, repo: string, months: number): Promise<Contributor[]> {
-    const since = DateTime.now().subtract({ months }).toISOString();
+    const since = new Date();
+    since.setMonth(since.getMonth() - months);
+    const sinceISO = since.toISOString();
     
     const response = await this.octokit.rest.repos.listContributors({
       owner,
       repo,
+      since: sinceISO,
       per_page: 100
     });
 

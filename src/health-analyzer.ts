@@ -1,4 +1,4 @@
-import { DateTime } from 'date-fns';
+import { parseISO, format } from 'date-fns';
 import {
   Repository,
   Issue,
@@ -172,7 +172,7 @@ export class HealthAnalyzer {
     // In a real implementation, this would use geographic data from GitHub API
     const newContributors = contributors.filter(c => {
       const firstContrib = new Date(c.firstContribution);
-      const twoMonthsAgo = DateTime.now().subtract({ months: 2 });
+      const twoMonthsAgo = new Date(); twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
       return firstContrib > twoMonthsAgo;
     });
 
@@ -266,7 +266,7 @@ export class HealthAnalyzer {
     // Analyze contributor trend
     const recentContributors = contributors.filter(c => {
       const lastContrib = new Date(c.lastContribution);
-      const twoMonthsAgo = DateTime.now().subtract({ months: 2 });
+      const twoMonthsAgo = new Date(); twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
       return lastContrib > twoMonthsAgo;
     });
 

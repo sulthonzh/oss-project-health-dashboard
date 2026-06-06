@@ -7,14 +7,15 @@
     "oss-health-check": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsup src/index.ts src/enterprise-cli.ts --format cjs --external chalk,commander,octokit,sqlite3,cli-table3,date-fns",
-    "dev": "tsup src/index.ts src/enterprise-cli.ts --format cjs --external chalk,commander,octokit,sqlite3,cli-table3,date-fns --watch",
+    "build": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,sqlite3,cli-table3,date-fns",
+    "dev": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,sqlite3,cli-table3,date-fns --watch",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "prepare": "npm run build",
-    "enterprise": "node dist/enterprise-cli.js"
+    "enterprise": "node dist/enterprise-cli.js",
+    "demo": "node dist/demo-cli.js"
   },
   "keywords": [
     "oss",
@@ -33,7 +34,7 @@
     "chalk": "^4.1.2",
     "commander": "^11.0.0",
     "cli-table3": "^0.6.3",
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.0.0",
     "octokit": "^3.0.0",
     "sqlite3": "^5.1.6"
   },
