@@ -225,7 +225,7 @@ export class HealthAnalyzer {
       }
     });
 
-    closedPRs.forEach(pr => {
+    mergedPRs.forEach(pr => {
       if (pr.closedAt) {
         const created = new Date(pr.createdAt);
         const closed = new Date(pr.closedAt);
