@@ -10,9 +10,9 @@ export interface ReportOptions {
 }
 
 export class DashboardReporter {
-  private outputFormat: 'table' | 'json' | 'web';
+  private outputFormat: 'table' | 'json' | 'markdown' | 'web';
 
-  constructor(outputFormat: 'table' | 'json' | 'web' = 'table') {
+  constructor(outputFormat: 'table' | 'json' | 'markdown' | 'web' = 'table') {
     this.outputFormat = outputFormat;
   }
 
@@ -20,6 +20,9 @@ export class DashboardReporter {
     switch (this.outputFormat) {
       case 'json':
         this.generateJsonReport(healthData);
+        break;
+      case 'markdown':
+        console.log(this.toMarkdown(healthData, options));
         break;
       case 'web':
         this.generateWebReport(healthData, options);
@@ -198,6 +201,130 @@ export class DashboardReporter {
     console.log(chalk.green('✅ Excellent (80-100)'));
     console.log(chalk.yellow('⚠️  Good (60-79)'));
     console.log(chalk.red('❌ Needs Improvement (0-59)'));
+  }
+
+  toMarkdown(healthData: HealthData, options: ReportOptions): string {
+    const { metrics, repository, insights, recommendations } = healthData;
+    const lines: string[] = [];
+
+    const statusLabel = (score: number) => score >= 80 ? '✅' : score >= 60 ? '⚠️' : '❌';
+
+    // Header
+    lines.push(`# ${repository.fullName} — Health Report`);
+    lines.push('');
+    lines.push(`- **Analyzed:** ${new Date(healthData.analysisDate).toISOString().split('T')[0]}`);
+    lines.push(`- **Depth:** ${healthData.analysisDepth} months`);
+    lines.push('');
+
+    // Overall score
+    lines.push(`## Overall Score: ${metrics.overallScore}/100 ${statusLabel(metrics.overallScore)}`);
+    lines.push('');
+
+    // Scores table
+    lines.push('## Metric Scores');
+    lines.push('');
+    lines.push('| Metric | Score | Status |');
+    lines.push('|--------|------:|--------|');
+    lines.push(`| Bus Factor | ${metrics.busFactor.score} | ${statusLabel(metrics.busFactor.score)} |`);
+    lines.push(`| Diversity | ${metrics.diversity.score} | ${statusLabel(metrics.diversity.score)} |`);
+    lines.push(`| Response Time | ${metrics.responseTime.score} | ${statusLabel(metrics.responseTime.score)} |`);
+    lines.push(`| Activity | ${metrics.activity.score} | ${statusLabel(metrics.activity.score)} |`);
+    lines.push(`| Sustainability | ${metrics.sustainability.score} | ${statusLabel(metrics.sustainability.score)} |`);
+    if (options.showSecurity) {
+      lines.push(`| Security | ${metrics.security.score} | ${statusLabel(metrics.security.score)} |`);
+    }
+    lines.push('');
+
+    // Bus Factor
+    if (options.showBusFactor) {
+      lines.push('## Bus Factor');
+      lines.push('');
+      lines.push(`**Risk Level:** ${metrics.busFactor.riskLevel} | **Critical Contributors:** ${metrics.busFactor.criticalContributors.join(', ') || 'None'}`);
+      lines.push('');
+      if (Object.keys(metrics.busFactor.distribution).length > 0) {
+        lines.push('| Contributor | Commits |');
+        lines.push('|-------------|--------:|');
+        for (const [author, count] of Object.entries(metrics.busFactor.distribution)) {
+          lines.push(`| ${author} | ${count} |`);
+        }
+        lines.push('');
+      }
+    }
+
+    // Repository info
+    lines.push('## Repository');
+    lines.push('');
+    lines.push(`| Property | Value |`);
+    lines.push(`|----------|-------|`);
+    lines.push(`| Language | ${repository.language} |`);
+    lines.push(`| Stars | ${repository.stars} |`);
+    lines.push(`| Forks | ${repository.forks} |`);
+    lines.push(`| Open Issues | ${repository.openIssues} |`);
+    lines.push(`| License | ${repository.license || 'None'} |`);
+    lines.push(`| Topics | ${repository.topics.join(', ') || 'None'} |`);
+    lines.push('');
+
+    // Activity
+    lines.push('## Activity');
+    lines.push('');
+    lines.push(`| Metric | Value |`);
+    lines.push(`|--------|------|`);
+    lines.push(`| Commit Velocity | ${metrics.activity.commitVelocity.toFixed(1)} commits/month |`);
+    lines.push(`| PR Velocity | ${metrics.activity.prVelocity.toFixed(1)} PRs/month |`);
+    lines.push(`| Issue Velocity | ${metrics.activity.issueVelocity.toFixed(1)} issues/month |`);
+    lines.push(`| Contributor Trend | ${metrics.activity.contributorTrend} |`);
+    lines.push('');
+
+    // Response Time
+    lines.push('## Response Time');
+    lines.push('');
+    lines.push(`| Metric | Hours |`);
+    lines.push(`|--------|------:|`);
+    lines.push(`| Average Response | ${metrics.responseTime.averageResponseTime.toFixed(1)} |`);
+    lines.push(`| Issue Response | ${metrics.responseTime.issueResponseTime.toFixed(1)} |`);
+    lines.push(`| PR Resolution | ${metrics.responseTime.prResponseTime.toFixed(1)} |`);
+    lines.push('');
+
+    // Sustainability
+    lines.push('## Sustainability');
+    lines.push('');
+    lines.push(`| Metric | Value |`);
+    lines.push(`|--------|------|`);
+    lines.push(`| Issue Backlog | ${metrics.sustainability.issueBacklog} |`);
+    lines.push(`| PR Merge Rate | ${(metrics.sustainability.prMergeRate * 100).toFixed(1)}% |`);
+    lines.push(`| Contributor Retention | ${(metrics.sustainability.contributorRetention * 100).toFixed(1)}% |`);
+    lines.push(`| Maintenance Index | ${metrics.sustainability.maintenanceIndex} |`);
+    lines.push('');
+
+    // Security
+    if (options.showSecurity) {
+      lines.push('## Security');
+      lines.push('');
+      lines.push(`| Metric | Value |`);
+      lines.push(`|--------|------|`);
+      lines.push(`| Dependency Health | ${metrics.security.dependencyHealth} |`);
+      lines.push(`| Vulnerabilities | ${metrics.security.vulnerabilityCount} |`);
+      lines.push(`| License Compliance | ${metrics.security.licenseCompliance ? '✅' : '❌'} |`);
+      lines.push('');
+    }
+
+    // Insights
+    if (insights.length > 0) {
+      lines.push('## Insights');
+      lines.push('');
+      insights.forEach(i => lines.push(`- ${i}`));
+      lines.push('');
+    }
+
+    // Recommendations
+    if (recommendations.length > 0) {
+      lines.push('## Recommendations');
+      lines.push('');
+      recommendations.forEach((r, i) => lines.push(`${i + 1}. ${r}`));
+      lines.push('');
+    }
+
+    return lines.join('\n');
   }
 
   private generateJsonReport(healthData: HealthData): void {

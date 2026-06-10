@@ -16,7 +16,7 @@ program
   .argument('<repo-url>', 'GitHub repository URL (owner/repo format)')
   .option('-d, --depth <number>', 'Analysis depth (months)', '6')
   .option('-t, --token <string>', 'GitHub personal access token')
-  .option('-o, --output <format>', 'Output format (table|json|web)', 'table')
+  .option('-o, --output <format>', 'Output format (table|json|markdown|web)', 'table')
   .option('--include-issues', 'Include issue analysis', true)
   .option('--include-prs', 'Include pull request analysis', true)
   .option('--include-contributors', 'Include detailed contributor analysis', true)
