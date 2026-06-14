@@ -30,7 +30,6 @@ program
       console.log(chalk.gray(`Analyzing: ${repoUrl}`));
       console.log();
 
-      // Parse repository URL
       const repoMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
       if (!repoMatch) {
         console.error(chalk.red('❌ Invalid GitHub repository URL'));
@@ -39,19 +38,16 @@ program
       }
 
       const [_, owner, repo] = repoMatch;
-      
-      // Initialize components
+       
       const config = new ConfigManager();
       const githubClient = new GitHubClient(options.token || config.getGitHubToken());
       const analyzer = new HealthAnalyzer(parseInt(options.depth));
       const reporter = new DashboardReporter(options.output);
 
       console.log(chalk.yellow('📊 Gathering project data...'));
-      
-      // Fetch repository data
+       
       const repoData = await githubClient.getRepository(owner, repo);
-      
-      // Fetch analysis data
+       
       const issues = options.includeIssues ? await githubClient.getIssues(owner, repo, parseInt(options.depth)) : [];
       const pullRequests = options.includePRs ? await githubClient.getPullRequests(owner, repo, parseInt(options.depth)) : [];
       const contributors = options.includeContributors ? await githubClient.getContributors(owner, repo, parseInt(options.depth)) : [];
@@ -61,9 +57,8 @@ program
       console.log(chalk.gray(`Found: ${issues.length} issues, ${pullRequests.length} PRs, ${contributors.length} contributors, ${commits.length} commits`));
       console.log();
 
-      // Analyze health metrics
       console.log(chalk.yellow('🔍 Analyzing health metrics...'));
-      
+       
       const healthData = await analyzer.analyze({
         repository: repoData,
         issues,
@@ -72,17 +67,15 @@ program
         commits
       });
 
-      // Generate and display report
       console.log(chalk.blue('📋 Project Health Report'));
       console.log('='.repeat(60));
-      
+       
       await reporter.generateReport(healthData, {
         showBenchmark: options.benchmark,
         showSecurity: options.includeSecurity,
         showBusFactor: options.includeBusFactor
       });
 
-      // Save data if requested
       if (options.saveData) {
         await analyzer.saveToDatabase(healthData);
         console.log(chalk.green('💾 Data saved to local database'));

@@ -1,4 +1,3 @@
-import { parseISO, format } from 'date-fns';
 import {
   Repository,
   Issue,
@@ -115,7 +114,6 @@ export class HealthAnalyzer {
     const activityScore = this.calculateActivity(data.commits, data.pullRequests, data.issues, data.contributors).score;
     const sustainabilityScore = this.calculateSustainability(data).score;
 
-    // Weighted average
     return Math.round(
       (busFactorScore * 0.25 +
         diversityScore * 0.2 +
@@ -148,7 +146,6 @@ export class HealthAnalyzer {
       }
     }
 
-    // Calculate risk based on concentration
     const maxContribution = sortedContributors[0]?.[1] || 0;
     const maxRatio = maxContribution / totalCommits;
     
@@ -177,8 +174,7 @@ export class HealthAnalyzer {
     });
 
     const newContributorsRatio = newContributors.length / contributors.length;
-    
-    // Calculate retention (simplified)
+     
     const activeContributors = contributors.filter(c => c.contributions > 10);
     const retentionRate = activeContributors.length / contributors.length;
 
@@ -238,8 +234,8 @@ export class HealthAnalyzer {
     const averageResolutionTime = mergedPRs.length > 0 ? totalResolutionTime / mergedPRs.length : 0;
 
     // Calculate scores (lower response times = higher scores)
-    const issueResponseScore = Math.max(0, Math.min(100, 100 - (averageResponseTime / 24) * 10)); // Cap at 100
-    const prResponseScore = Math.max(0, Math.min(100, 100 - (averageResolutionTime / 72) * 5)); // Cap at 100
+    const issueResponseScore = Math.max(0, Math.min(100, 100 - (averageResponseTime / 24) * 10));
+    const prResponseScore = Math.max(0, Math.min(100, 100 - (averageResolutionTime / 72) * 5));
 
     const score = Math.round((issueResponseScore + prResponseScore) / 2);
 
@@ -263,7 +259,6 @@ export class HealthAnalyzer {
     const prsPerMonth = pullRequests.length / months;
     const issuesPerMonth = issues.length / months;
 
-    // Analyze contributor trend
     const recentContributors = contributors.filter(c => {
       const lastContrib = new Date(c.lastContribution);
       const twoMonthsAgo = new Date(); twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
@@ -296,7 +291,6 @@ export class HealthAnalyzer {
     const mergedPRs = pullRequests.filter((pr: PullRequest) => pr.state === 'closed').length;
     const activeContributors = contributors.filter((c: Contributor) => c.contributions > 5).length;
 
-    // Calculate maintenance index
     const issueBacklogRatio = openIssues / Math.max(1, pullRequests.length);
     const prMergeRate = mergedPRs / Math.max(1, pullRequests.length);
     const contributorRetention = activeContributors / Math.max(1, contributors.length);
@@ -328,7 +322,6 @@ export class HealthAnalyzer {
     let vulnerabilityCount = 0;
     let dependencyHealth: 'good' | 'warning' | 'critical' = 'good';
 
-    // Simple heuristics for security score
     if (stars < 100) {
       dependencyHealth = 'critical';
       vulnerabilityCount = Math.floor(Math.random() * 10) + 5;

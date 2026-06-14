@@ -35,19 +35,16 @@ export class DashboardReporter {
   private generateTableReport(healthData: HealthData, options: ReportOptions): void {
     const { metrics, repository, insights, recommendations } = healthData;
 
-    // Header
     console.log(chalk.bold.cyan(repository.fullName));
     console.log(chalk.gray(`Analysis Date: ${format(new Date(healthData.analysisDate), 'PPP')}`));
     console.log(chalk.gray(`Analysis Depth: ${healthData.analysisDepth} months`));
     console.log();
 
-    // Overall Score
     const scoreColor = metrics.overallScore >= 80 ? chalk.green : 
                      metrics.overallScore >= 60 ? chalk.yellow : chalk.red;
     console.log(scoreColor.bold(`🎯 Overall Health Score: ${metrics.overallScore}/100`));
     console.log();
 
-    // Quick Stats
     const statsTable = new Table({
       head: [chalk.cyan('Metric'), chalk.cyan('Score'), chalk.cyan('Status')],
       colWidths: [30, 10, 20]
@@ -70,7 +67,6 @@ export class DashboardReporter {
     console.log(statsTable.toString());
     console.log();
 
-    // Bus Factor Details
     if (options.showBusFactor) {
       console.log(chalk.bold.yellow('🚨 Bus Factor Analysis'));
       const busFactorTable = new Table({
@@ -89,7 +85,6 @@ export class DashboardReporter {
       console.log();
     }
 
-    // Repository Info
     console.log(chalk.bold.blue('📊 Repository Information'));
     const repoTable = new Table({
       head: [chalk.cyan('Property'), chalk.cyan('Value')],
@@ -110,7 +105,6 @@ export class DashboardReporter {
     console.log(repoTable.toString());
     console.log();
 
-    // Activity Metrics
     console.log(chalk.bold.green('📈 Activity Metrics'));
     const activityTable = new Table({
       head: [chalk.cyan('Metric'), chalk.cyan('Value')],
@@ -127,7 +121,6 @@ export class DashboardReporter {
     console.log(activityTable.toString());
     console.log();
 
-    // Response Time
     console.log(chalk.bold.magenta('⏱️ Response Time Analysis'));
     const responseTable = new Table({
       head: [chalk.cyan('Metric'), chalk.cyan('Hours')],
@@ -143,7 +136,6 @@ export class DashboardReporter {
     console.log(responseTable.toString());
     console.log();
 
-    // Sustainability
     console.log(chalk.bold.orange('🌱 Sustainability Metrics'));
     const sustainabilityTable = new Table({
       head: [chalk.cyan('Metric'), chalk.cyan('Value')],
@@ -160,7 +152,6 @@ export class DashboardReporter {
     console.log(sustainabilityTable.toString());
     console.log();
 
-    // Security
     if (options.showSecurity) {
       console.log(chalk.bold.red('🔒 Security Analysis'));
       const securityTable = new Table({
@@ -178,7 +169,6 @@ export class DashboardReporter {
       console.log();
     }
 
-    // Insights
     if (insights.length > 0) {
       console.log(chalk.bold.yellow('💡 Key Insights'));
       insights.forEach(insight => {
@@ -187,7 +177,6 @@ export class DashboardReporter {
       console.log();
     }
 
-    // Recommendations
     if (recommendations.length > 0) {
       console.log(chalk.bold.blue('🎯 Recommendations'));
       recommendations.forEach((recommendation, index) => {
@@ -196,7 +185,6 @@ export class DashboardReporter {
       console.log();
     }
 
-    // Legend
     console.log(chalk.gray('Status Legend:'));
     console.log(chalk.green('✅ Excellent (80-100)'));
     console.log(chalk.yellow('⚠️  Good (60-79)'));
@@ -209,18 +197,15 @@ export class DashboardReporter {
 
     const statusLabel = (score: number) => score >= 80 ? '✅' : score >= 60 ? '⚠️' : '❌';
 
-    // Header
     lines.push(`# ${repository.fullName} — Health Report`);
     lines.push('');
     lines.push(`- **Analyzed:** ${new Date(healthData.analysisDate).toISOString().split('T')[0]}`);
     lines.push(`- **Depth:** ${healthData.analysisDepth} months`);
     lines.push('');
 
-    // Overall score
     lines.push(`## Overall Score: ${metrics.overallScore}/100 ${statusLabel(metrics.overallScore)}`);
     lines.push('');
 
-    // Scores table
     lines.push('## Metric Scores');
     lines.push('');
     lines.push('| Metric | Score | Status |');
@@ -235,7 +220,6 @@ export class DashboardReporter {
     }
     lines.push('');
 
-    // Bus Factor
     if (options.showBusFactor) {
       lines.push('## Bus Factor');
       lines.push('');
@@ -251,7 +235,6 @@ export class DashboardReporter {
       }
     }
 
-    // Repository info
     lines.push('## Repository');
     lines.push('');
     lines.push(`| Property | Value |`);
@@ -264,7 +247,6 @@ export class DashboardReporter {
     lines.push(`| Topics | ${repository.topics.join(', ') || 'None'} |`);
     lines.push('');
 
-    // Activity
     lines.push('## Activity');
     lines.push('');
     lines.push(`| Metric | Value |`);
@@ -275,7 +257,6 @@ export class DashboardReporter {
     lines.push(`| Contributor Trend | ${metrics.activity.contributorTrend} |`);
     lines.push('');
 
-    // Response Time
     lines.push('## Response Time');
     lines.push('');
     lines.push(`| Metric | Hours |`);
@@ -285,7 +266,6 @@ export class DashboardReporter {
     lines.push(`| PR Resolution | ${metrics.responseTime.prResponseTime.toFixed(1)} |`);
     lines.push('');
 
-    // Sustainability
     lines.push('## Sustainability');
     lines.push('');
     lines.push(`| Metric | Value |`);
@@ -296,7 +276,6 @@ export class DashboardReporter {
     lines.push(`| Maintenance Index | ${metrics.sustainability.maintenanceIndex} |`);
     lines.push('');
 
-    // Security
     if (options.showSecurity) {
       lines.push('## Security');
       lines.push('');
@@ -308,7 +287,6 @@ export class DashboardReporter {
       lines.push('');
     }
 
-    // Insights
     if (insights.length > 0) {
       lines.push('## Insights');
       lines.push('');
@@ -316,7 +294,6 @@ export class DashboardReporter {
       lines.push('');
     }
 
-    // Recommendations
     if (recommendations.length > 0) {
       lines.push('## Recommendations');
       lines.push('');

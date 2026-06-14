@@ -16,7 +16,6 @@ program
   .description('Enterprise-grade OSS project health analysis dashboard')
   .version('1.0.0');
 
-// Multi-repo analysis command
 program
   .command('multi-repo')
   .description('Analyze multiple repositories and generate consolidated report')
@@ -35,7 +34,6 @@ program
       console.log(chalk.gray(`Loading repositories from: ${repoFile}`));
       console.log();
 
-      // Read repository URLs from file
       const repoContent = await fs.readFile(repoFile, 'utf-8');
       const repoUrls = repoContent.split('\n')
         .filter(line => line.trim() && !line.startsWith('#'))
@@ -47,8 +45,7 @@ program
       }
 
       console.log(chalk.green(`Found ${repoUrls.length} repositories to analyze`));
-      
-      // Initialize components
+       
       const config = new ConfigManager();
       const githubClient = new GitHubClient(config.getGitHubToken());
       const analyzer = new HealthAnalyzer(6);
@@ -56,12 +53,10 @@ program
 
       const results: any[] = [];
 
-      // Analyze each repository
       for (const [i, repoUrl] of repoUrls.entries()) {
         console.log(chalk.yellow(`📊 Analyzing repository ${i + 1}/${repoUrls.length}: ${repoUrl}`));
-        
+         
         try {
-          // Parse repository URL
           const repoMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
           if (!repoMatch) {
             console.error(chalk.red(`❌ Invalid repository URL: ${repoUrl}`));
@@ -69,8 +64,7 @@ program
           }
 
           const [_, owner, repo] = repoMatch;
-          
-          // Fetch all data
+           
           const [repoData, issues, pullRequests, contributors, commits] = await Promise.all([
             githubClient.getRepository(owner, repo),
             githubClient.getIssues(owner, repo, 6),
@@ -79,7 +73,6 @@ program
             githubClient.getCommits(owner, repo, 6)
           ]);
 
-          // Analyze health
           const healthData = await analyzer.analyze({
             repository: repoData,
             issues,
@@ -88,7 +81,6 @@ program
             commits
           });
 
-          // Filter by threshold
           if (healthData.overallScore >= threshold) {
             results.push({
               url: repoUrl,
@@ -111,17 +103,14 @@ program
         }
       }
 
-      // Generate consolidated report
       console.log(chalk.blue('📋 Generating consolidated report...'));
-      
+       
       await generateEnterpriseReport(results, options);
-      
-      // Export data if requested
+       
       if (options.exportPath) {
         await exportResults(results, options);
       }
 
-      // Send notifications if configured
       if (options.slackWebhook || options.emailReport) {
         await sendNotifications(results, options);
       }
@@ -135,7 +124,6 @@ program
     }
   });
 
-// Health monitoring command
 program
   .command('monitor')
   .description('Set up continuous monitoring for repositories')
@@ -160,7 +148,6 @@ program
       console.log(chalk.yellow(`Alert threshold: ${threshold}/100`));
       console.log();
 
-      // Parse repository URL
       const repoMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
       if (!repoMatch) {
         console.error(chalk.red('❌ Invalid GitHub repository URL'));
@@ -168,8 +155,7 @@ program
       }
 
       const [_, owner, repo] = repoMatch;
-      
-      // Initialize monitoring
+       
       const config = new ConfigManager();
       const githubClient = new GitHubClient(config.getGitHubToken());
       const analyzer = new HealthAnalyzer(6);
@@ -181,10 +167,8 @@ program
       console.log(chalk.gray('Press Ctrl+C to stop monitoring'));
       console.log();
 
-      // Initial check
       await performHealthCheck(owner, repo, analyzer, githubClient, threshold, options);
 
-      // Set up interval monitoring
       monitoringInterval = setInterval(async () => {
         try {
           await performHealthCheck(owner, repo, analyzer, githubClient, threshold, options);
@@ -194,7 +178,6 @@ program
         }
       }, interval);
 
-      // Handle graceful shutdown
       process.on('SIGINT', () => {
         console.log(chalk.yellow('\n🛑 Stopping monitoring...'));
         clearInterval(monitoringInterval);
@@ -208,7 +191,6 @@ program
     }
   });
 
-// Benchmark analysis command
 program
   .command('benchmark')
   .description('Benchmark project against similar repositories')
@@ -224,7 +206,6 @@ program
       console.log(chalk.gray(`Category: ${options.category}`));
       console.log();
 
-      // Parse repository URL
       const repoMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
       if (!repoMatch) {
         console.error(chalk.red('❌ Invalid GitHub repository URL'));
@@ -232,22 +213,19 @@ program
       }
 
       const [_, owner, repo] = repoMatch;
-      
-      // Initialize components
+       
       const config = new ConfigManager();
       const githubClient = new GitHubClient(config.getGitHubToken());
       const analyzer = new HealthAnalyzer(6);
 
       console.log(chalk.yellow('📊 Gathering benchmark data...'));
-      
-      // Get repository data
+       
       const repoData = await githubClient.getRepository(owner, repo);
       const benchmarkResults = await performBenchmarkAnalysis(owner, repo, githubClient, analyzer, options);
 
-      // Generate benchmark report
       console.log(chalk.blue('📋 Benchmark Report'));
       console.log('='.repeat(60));
-      
+       
       await generateBenchmarkReport(benchmarkResults, options);
 
       console.log(chalk.green('🎉 Benchmark analysis complete!'));
@@ -259,10 +237,8 @@ program
     }
   });
 
-// Helper functions
 async function performHealthCheck(owner: string, repo: string, analyzer: HealthAnalyzer, githubClient: GitHubClient, threshold: number, options: any) {
   try {
-    // Fetch current data
     const [repoData, issues, pullRequests, contributors, commits] = await Promise.all([
       githubClient.getRepository(owner, repo),
       githubClient.getIssues(owner, repo, 6),
@@ -271,7 +247,6 @@ async function performHealthCheck(owner: string, repo: string, analyzer: HealthA
       githubClient.getCommits(owner, repo, 6)
     ]);
 
-    // Analyze health
     const healthData = await analyzer.analyze({
       repository: repoData,
       issues,
@@ -282,13 +257,11 @@ async function performHealthCheck(owner: string, repo: string, analyzer: HealthA
 
     console.log(`${new Date().toLocaleString()}: Score ${healthData.overallScore}/100 - ${repoData.name}`);
 
-    // Check for threshold violations
     if (healthData.overallScore < threshold) {
       console.log(chalk.red(`⚠️  Alert: Score ${healthData.overallScore} below threshold ${threshold}`));
       await sendAlert(owner, repo, healthData, threshold, options);
     }
 
-    // Export data for historical analysis
     if (options.exportPath) {
       const exportPath = path.join(options.exportPath, `${owner}-${repo}-health.json`);
       await fs.writeFile(exportPath, JSON.stringify({
@@ -396,7 +369,6 @@ async function sendAlert(owner: string, repo: string, healthData: any, threshold
   };
 
   if (options.alertSlack) {
-    // Send to Slack webhook
     const response = await fetch(options.alertSlack, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
