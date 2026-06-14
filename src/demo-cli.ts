@@ -24,8 +24,7 @@ program
       const generator = new DemoDataGenerator();
       
       console.log(chalk.yellow('📊 Generating demo data...'));
-      
-      // Generate comprehensive mock data
+       
       const mockData = {
         repository: DemoDataGenerator.generateRepository('facebook/react'),
         issues: DemoDataGenerator.generateIssues(25),
@@ -49,7 +48,6 @@ program
       console.log(chalk.gray(`Issues: ${mockData.issues.length}, PRs: ${mockData.pullRequests.length}, Contributors: ${mockData.contributors.length}, Commits: ${mockData.commits.length}`));
       console.log('');
       
-      // Calculate simple metrics
       const healthScore = Math.floor(Math.random() * 20) + 75; // 75-95
       const busFactorScore = Math.floor(Math.random() * 20) + 70; // 70-90
       
@@ -57,7 +55,6 @@ program
       console.log('='.repeat(60));
       
       if (options.format === 'terminal') {
-        // Terminal output with colors
         console.log(chalk.green('📊 Overall Health Score'));
         const progress = '█'.repeat(Math.floor(healthScore / 5)) + '░'.repeat(20 - Math.floor(healthScore / 5));
         console.log(`${progress} ${healthScore}/100`);
@@ -93,7 +90,6 @@ program
         console.log('');
         
       } else if (options.format === 'json') {
-        // JSON output
         const report = {
           repository: mockData.repository,
           metrics: {
