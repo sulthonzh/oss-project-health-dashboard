@@ -23,7 +23,7 @@ export class ConfigManager {
         const configData = fs.readFileSync(this.configPath, 'utf-8');
         return JSON.parse(configData);
       }
-    } catch (error) {
+    } catch {
       console.warn('Warning: Could not load config file, using defaults');
     }
 

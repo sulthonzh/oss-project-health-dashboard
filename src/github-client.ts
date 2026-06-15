@@ -1,5 +1,4 @@
 import { Octokit } from 'octokit';
-import { format } from 'date-fns';
 
 export interface Repository {
   name: string;
@@ -209,10 +208,8 @@ export class GitHubClient {
       issues: 0
     }));
 
-    // Get detailed contributor information
     for (const contributor of contributors) {
       try {
-        // Get user data for email and better name
         const userResponse = await this.octokit.rest.users.getByUsername({
           username: contributor.login
         });

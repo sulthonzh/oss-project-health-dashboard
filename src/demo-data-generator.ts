@@ -62,10 +62,7 @@ export interface DemoPullRequest {
 }
 
 export class DemoDataGenerator {
-  
-  /**
-   * Generate realistic mock repository data
-   */
+   
   static generateRepository(repoUrl: string): DemoRepository {
     const [_, owner, repo] = repoUrl.replace('https://github.com/', '').split('/');
     
@@ -83,10 +80,7 @@ export class DemoDataGenerator {
       topics: this.getRandomTopics()
     };
   }
-  
-  /**
-   * Generate realistic mock contributor data
-   */
+   
   static generateContributors(count: number = 10): DemoContributor[] {
     const contributorNames = [
       { login: 'sulthonzh', name: 'Sulthon Zh', email: 'sulthonzh@example.com' },
@@ -113,10 +107,7 @@ export class DemoDataGenerator {
     // Sort by contributions (highest first)
     return contributors.sort((a, b) => b.contributions - a.contributions);
   }
-  
-  /**
-   * Generate realistic mock issue data
-   */
+   
   static generateIssues(count: number = 20): DemoIssue[] {
     const issueTitles = [
       "Add new feature X",
@@ -157,10 +148,7 @@ export class DemoDataGenerator {
       };
     });
   }
-  
-  /**
-   * Generate realistic mock pull request data
-   */
+   
   static generatePullRequests(count: number = 15): DemoPullRequest[] {
     const prTitles = [
       "feat: Add new authentication method",
@@ -205,10 +193,7 @@ export class DemoDataGenerator {
       };
     });
   }
-  
-  /**
-   * Get mock bus factor analysis
-   */
+   
   static getBusFactorAnalysis(contributors: DemoContributor[]) {
     const totalCommits = contributors.reduce((sum, c) => sum + c.contributions, 0);
     const criticalThreshold = totalCommits * 0.3; // 30% of commits
@@ -227,8 +212,7 @@ export class DemoDataGenerator {
       }, {} as Record<string, number>)
     };
   }
-  
-  // Helper methods
+   
   private static getRandomLanguage(): string {
     const languages = ['TypeScript', 'JavaScript', 'Python', 'Rust', 'Go', 'Java', 'C++', 'PHP'];
     return languages[Math.floor(Math.random() * languages.length)];
