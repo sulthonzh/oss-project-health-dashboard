@@ -313,35 +313,35 @@ export class HealthAnalyzer {
   }
 
   private calculateSecurity(repository: Repository): SecurityMetrics {
-    // Simplified security analysis
-    // In a real implementation, this would use GitHub's security APIs
-    const hasLicense = repository.license !== 'No license';
+    // Security analysis based on observable repository signals
+    const hasLicense = repository.license !== 'No license' && repository.license !== '';
     const stars = repository.stars;
     const openIssues = repository.openIssues;
 
-    let vulnerabilityCount = 0;
-    let dependencyHealth: 'good' | 'warning' | 'critical' = 'good';
-
-    if (stars < 100) {
-      dependencyHealth = 'critical';
-      vulnerabilityCount = Math.floor(Math.random() * 10) + 5;
-    } else if (stars < 1000) {
-      dependencyHealth = 'warning';
-      vulnerabilityCount = Math.floor(Math.random() * 5) + 1;
-    } else {
+    // Heuristic: projects with more stars typically have better security practices
+    // (more eyes, CI/CD, dependency scanning). This is a proxy signal, not a real audit.
+    let dependencyHealth: 'good' | 'warning' | 'critical';
+    if (stars >= 1000) {
       dependencyHealth = 'good';
-      vulnerabilityCount = Math.floor(Math.random() * 2);
+    } else if (stars >= 100) {
+      dependencyHealth = 'warning';
+    } else {
+      dependencyHealth = 'critical';
     }
+
+    // Issue-to-star ratio: high open issues relative to stars suggests limited maintenance capacity
+    const issueToStarRatio = stars > 0 ? openIssues / stars : 1;
+    const maintenancePenalty = Math.min(10, Math.floor(issueToStarRatio * 50));
 
     const score = Math.round(
       (hasLicense ? 40 : 0) +
       (dependencyHealth === 'good' ? 40 : dependencyHealth === 'warning' ? 20 : 0) +
-      Math.max(0, 20 - (vulnerabilityCount * 2))
+      Math.max(0, 20 - maintenancePenalty)
     );
 
     return {
       score,
-      vulnerabilityCount,
+      vulnerabilityCount: 0, // Not determinable without GitHub security advisory API access
       dependencyHealth,
       licenseCompliance: hasLicense
     };

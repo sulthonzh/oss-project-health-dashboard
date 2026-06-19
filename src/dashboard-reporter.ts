@@ -55,7 +55,7 @@ export class DashboardReporter {
       ['Diversity', metrics.diversity.score, this.getStatusEmoji(metrics.diversity.score)],
       ['Response Time', metrics.responseTime.score, this.getStatusEmoji(metrics.responseTime.score)],
       ['Activity', metrics.activity.score, this.getStatusEmoji(metrics.activity.score)],
-      ['Sustainability', metrics.metrics.sustainability.score, this.getStatusEmoji(metrics.metrics.sustainability.score)]
+      ['Sustainability', metrics.sustainability.score, this.getStatusEmoji(metrics.sustainability.score)]
     );
 
     if (options.showSecurity) {
@@ -74,10 +74,10 @@ export class DashboardReporter {
         colWidths: [25, 10, 15]
       });
 
-      metrics.busFactor.distribution.forEach((count, author) => {
+      for (const [author, count] of Object.entries(metrics.busFactor.distribution)) {
         const riskLevel = this.getBusFactorRiskColor(metrics.busFactor.riskLevel);
         busFactorTable.push([author, count.toString(), riskLevel(metrics.busFactor.riskLevel)]);
-      });
+      }
 
       console.log(busFactorTable.toString());
       console.log(chalk.gray(`Critical Contributors: ${metrics.busFactor.criticalContributors.join(', ')}`));
@@ -136,17 +136,17 @@ export class DashboardReporter {
     console.log(responseTable.toString());
     console.log();
 
-    console.log(chalk.bold.orange('🌱 Sustainability Metrics'));
+    console.log(chalk.bold.magenta('🌱 Sustainability Metrics'));
     const sustainabilityTable = new Table({
       head: [chalk.cyan('Metric'), chalk.cyan('Value')],
       colWidths: [25, 30]
     });
 
     sustainabilityTable.push(
-      ['Issue Backlog', metrics.metrics.sustainability.issueBacklog.toString()],
-      ['PR Merge Rate', `${(metrics.metrics.sustainability.prMergeRate * 100).toFixed(1)}%`],
-      ['Contributor Retention', `${(metrics.metrics.sustainability.contributorRetention * 100).toFixed(1)}%`],
-      ['Maintenance Index', metrics.metrics.sustainability.maintenanceIndex.toString()]
+      ['Issue Backlog', metrics.sustainability.issueBacklog.toString()],
+      ['PR Merge Rate', `${(metrics.sustainability.prMergeRate * 100).toFixed(1)}%`],
+      ['Contributor Retention', `${(metrics.sustainability.contributorRetention * 100).toFixed(1)}%`],
+      ['Maintenance Index', metrics.sustainability.maintenanceIndex.toString()]
     );
 
     console.log(sustainabilityTable.toString());

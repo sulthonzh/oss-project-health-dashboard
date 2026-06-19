@@ -14,7 +14,7 @@ const program = new Command();
 program
   .name('oss-health-check-enterprise')
   .description('Enterprise-grade OSS project health analysis dashboard')
-  .version('1.0.0');
+  .version('1.1.0');
 
 program
   .command('multi-repo')
@@ -81,21 +81,21 @@ program
             commits
           });
 
-          if (healthData.overallScore >= threshold) {
+          if (healthData.metrics.overallScore >= threshold) {
             results.push({
               url: repoUrl,
-              score: healthData.overallScore,
-              busFactor: healthData.busFactor,
-              diversity: healthData.diversity,
-              responseTime: healthData.responseTime,
-              activity: healthData.activity,
-              sustainability: healthData.sustainability,
-              security: healthData.security,
+              score: healthData.metrics.overallScore,
+              busFactor: healthData.metrics.busFactor,
+              diversity: healthData.metrics.diversity,
+              responseTime: healthData.metrics.responseTime,
+              activity: healthData.metrics.activity,
+              sustainability: healthData.metrics.sustainability,
+              security: healthData.metrics.security,
               lastUpdated: new Date().toISOString()
             });
           }
 
-          console.log(chalk.green(`✅ Score: ${healthData.overallScore}/100`));
+          console.log(chalk.green(`✅ Score: ${healthData.metrics.overallScore}/100`));
           
         } catch (error) {
           console.error(chalk.red(`❌ Failed to analyze ${repoUrl}:`));
@@ -109,10 +109,6 @@ program
        
       if (options.exportPath) {
         await exportResults(results, options);
-      }
-
-      if (options.slackWebhook || options.emailReport) {
-        await sendNotifications(results, options);
       }
 
       console.log(chalk.green('🎉 Enterprise analysis complete!'));
@@ -255,10 +251,10 @@ async function performHealthCheck(owner: string, repo: string, analyzer: HealthA
       commits
     });
 
-    console.log(`${new Date().toLocaleString()}: Score ${healthData.overallScore}/100 - ${repoData.name}`);
+    console.log(`${new Date().toLocaleString()}: Score ${healthData.metrics.overallScore}/100 - ${repoData.name}`);
 
-    if (healthData.overallScore < threshold) {
-      console.log(chalk.red(`⚠️  Alert: Score ${healthData.overallScore} below threshold ${threshold}`));
+    if (healthData.metrics.overallScore < threshold) {
+      console.log(chalk.red(`⚠️  Alert: Score ${healthData.metrics.overallScore} below threshold ${threshold}`));
       await sendAlert(owner, repo, healthData, threshold, options);
     }
 
@@ -355,10 +351,10 @@ async function sendAlert(owner: string, repo: string, healthData: any, threshold
   const alert = {
     timestamp: new Date().toISOString(),
     repository: `${owner}/${repo}`,
-    currentScore: healthData.overallScore,
+    currentScore: healthData.metrics.overallScore,
     threshold,
     violations: [
-      healthData.busFactor < 0.5 && 'Low bus factor',
+      healthData.metrics.busFactor.score < 0.5 && 'Low bus factor',
       healthData.diversity < 0.6 && 'Low contributor diversity',
       healthData.responseTime > 7 && 'High response time',
       healthData.activity < 0.5 && 'Low activity',
@@ -394,7 +390,7 @@ async function sendAlert(owner: string, repo: string, healthData: any, threshold
 function generateRecommendations(healthData: any) {
   const recommendations = [];
   
-  if (healthData.busFactor < 0.5) {
+  if (healthData.metrics.busFactor.score < 0.5) {
     recommendations.push('Increase code review participation from multiple maintainers');
   }
   if (healthData.diversity < 0.6) {
@@ -433,12 +429,12 @@ async function performBenchmarkAnalysis(owner: string, repo: string, githubClien
     category: options.category,
     similarProjects: [], // Would be populated with actual similar projects
     benchmarks: {
-      busFactor: { target: healthData.busFactor, industry: 0.65 },
-      diversity: { target: healthData.diversity, industry: 0.70 },
-      responseTime: { target: healthData.responseTime, industry: 3.5 },
-      activity: { target: healthData.activity, industry: 0.75 },
-      sustainability: { target: healthData.sustainability, industry: 0.80 },
-      security: { target: healthData.security, industry: 0.85 }
+      busFactor: { target: healthData.metrics.busFactor, industry: 0.65 },
+      diversity: { target: healthData.metrics.diversity, industry: 0.70 },
+      responseTime: { target: healthData.metrics.responseTime, industry: 3.5 },
+      activity: { target: healthData.metrics.activity, industry: 0.75 },
+      sustainability: { target: healthData.metrics.sustainability, industry: 0.80 },
+      security: { target: healthData.metrics.security, industry: 0.85 }
     }
   };
 }

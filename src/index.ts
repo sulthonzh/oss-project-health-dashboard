@@ -12,7 +12,7 @@ const program = new Command();
 program
   .name('oss-health-check')
   .description('One-command OSS project health analysis dashboard')
-  .version('1.0.0')
+  .version('1.1.0')
   .argument('<repo-url>', 'GitHub repository URL (owner/repo format)')
   .option('-d, --depth <number>', 'Analysis depth (months)', '6')
   .option('-t, --token <string>', 'GitHub personal access token')

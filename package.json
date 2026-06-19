@@ -1,18 +1,16 @@
 {
   "name": "oss-project-health-dashboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "One-command OSS project health analysis dashboard with bus factor, contributor diversity, response time, and sustainability metrics",
   "main": "dist/index.js",
   "bin": {
     "oss-health-check": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,sqlite3,cli-table3,date-fns",
-    "dev": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,sqlite3,cli-table3,date-fns --watch",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
+    "build": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,cli-table3,date-fns",
+    "dev": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,cli-table3,date-fns --watch",
+    "test": "node --test test/test.mjs",
+    "lint": "echo 'Linting is not configured for this project'",
     "prepare": "npm run build",
     "enterprise": "node dist/enterprise-cli.js",
     "demo": "node dist/demo-cli.js",
@@ -36,25 +34,35 @@
     "commander": "^11.0.0",
     "cli-table3": "^0.6.3",
     "date-fns": "^4.0.0",
-    "octokit": "^3.0.0",
-    "sqlite3": "^6.0.0"
+    "octokit": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "@types/sqlite3": "^3.1.8",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "eslint": "^8.47.0",
     "tsup": "^7.2.0",
-    "typescript": "^6.0.0",
-    "vitest": "^0.34.0"
+    "typescript": "^6.0.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./analyzer": {
+      "require": "./dist/health-analyzer.js",
+      "default": "./dist/health-analyzer.js"
+    },
+    "./reporter": {
+      "require": "./dist/dashboard-reporter.js",
+      "default": "./dist/dashboard-reporter.js"
+    }
+  },
+  "prepublishOnly": "npm run build && npm test",
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ]
 }

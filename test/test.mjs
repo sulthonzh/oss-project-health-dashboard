@@ -3,8 +3,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { ConfigManager } = require('../dist-test/config-manager.js');
-const { HealthAnalyzer } = require('../dist-test/health-analyzer.js');
+const { ConfigManager } = require('../dist/config-manager.js');
+const { HealthAnalyzer } = require('../dist/health-analyzer.js');
 
 function makeMockData(overrides = {}) {
   return {

@@ -69,6 +69,23 @@ export interface Contributor {
   email?: string;
 }
 
+export interface HealthData {
+  repository: Repository;
+  analysisDate: string;
+  analysisDepth: number;
+  metrics: {
+    overallScore: number;
+    busFactor: { score: number; criticalContributors: string[]; riskLevel: string; distribution: Record<string, number> };
+    diversity: { score: number; newContributorsRatio: number; retentionRate: number; geographicDistribution: Record<string, number>; timezoneDistribution: { timezone: string; count: number }[] };
+    responseTime: { score: number; averageResponseTime: number; averageResolutionTime: number; issueResponseTime: number; prResponseTime: number };
+    activity: { score: number; commitVelocity: number; prVelocity: number; issueVelocity: number; contributorTrend: string };
+    sustainability: { score: number; contributorRetention: number; issueBacklog: number; prMergeRate: number; maintenanceIndex: number };
+    security: { score: number; vulnerabilityCount: number; dependencyHealth: string; licenseCompliance: boolean };
+  };
+  insights: string[];
+  recommendations: string[];
+}
+
 export class GitHubClient {
   private octokit: Octokit;
 
