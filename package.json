@@ -1,14 +1,14 @@
 {
   "name": "oss-project-health-dashboard",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "One-command OSS project health analysis dashboard with bus factor, contributor diversity, response time, and sustainability metrics",
   "main": "dist/index.js",
   "bin": {
     "oss-health-check": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,cli-table3,date-fns",
-    "dev": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,cli-table3,date-fns --watch",
+    "build": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,cli-table3",
+    "dev": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts --format cjs --external chalk,commander,octokit,cli-table3 --watch",
     "test": "node --test test/test.mjs",
     "lint": "echo 'Linting is not configured for this project'",
     "prepare": "npm run build",
@@ -33,7 +33,6 @@
     "chalk": "^5.0.0",
     "commander": "^11.0.0",
     "cli-table3": "^0.6.3",
-    "date-fns": "^4.0.0",
     "octokit": "^3.0.0"
   },
   "devDependencies": {

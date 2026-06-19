@@ -9,7 +9,7 @@ const program = new Command();
 program
   .name('oss-health')
   .description('OSS Project Health Dashboard - Analyze open source project health')
-  .version('1.1.0');
+  .version('1.2.0');
 
 program
   .command('demo')

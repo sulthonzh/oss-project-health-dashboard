@@ -2,8 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/oss-project-health-dashboard.svg)](https://badge.fury.io/js/oss-project-health-dashboard)
 [![Build Status](https://github.com/sulthonzh/oss-project-health-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/sulthonzh/oss-project-health-dashboard/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-One-command OSS project health analysis dashboard with comprehensive metrics including bus factor, contributor diversity, response time, and sustainability indicators.
+**Is your open-source project one person away from dying?** Get a full health report — bus factor, contributor diversity, response times, security posture — in one command. No dashboards to configure, no agents to install.
 
 ## 🚀 Features
 
@@ -173,26 +174,52 @@ const data = await analyzer.analyze({
 });
 ```
 
-## 🎯 Scenarios
+## 🔄 How It Compares
 
-### Bus Factor Risk Assessment
+| Feature | oss-health-check | Octoclairvoyant | Repo Health Checker | GitHub Insights |
+|---------|-----------------|-----------------|--------------------|----------------|
+| Bus factor scoring | ✅ | ❌ | ❌ | ❌ |
+| Contributor diversity | ✅ | ❌ | Partial | ❌ |
+| CLI (no UI needed) | ✅ | ❌ | ✅ | ❌ |
+| JSON output for pipelines | ✅ | ❌ | Partial | ❌ |
+| Works offline (demo mode) | ✅ | ❌ | ❌ | ❌ |
+| Multi-repo batch | ✅ Enterprise | ❌ | ❌ | Partial |
+| Price | Free | Free | Free | Paid |
+
+## 🎯 Real-World Examples
+
+### 1. Pre-acquisition due diligence
+Assess a project's health before depending on it:
 ```bash
+oss-health-check facebook/react --depth 12 --output json > react-health.json
+```
+Get bus factor, response times, and sustainability — the same metrics a VC would want.
+
+### 2. Monthly team review
+Generate a markdown report for your team's monthly architecture review:
+```bash
+oss-health-check yourorg/your-repo --output markdown --depth 1 --save-data > monthly-report.md
+```
+Track trends month-over-month with `--save-data` building a historical baseline.
+
+### 3. CI/CD quality gate
+Fail CI when project health drops below threshold:
+```bash
+SCORE=$(oss-health-check yourorg/critical-repo --output json | jq '.metrics.overallScore')
+[ "$SCORE" -lt 70 ] && echo "Health score dropped below 70!" && exit 1
+```
+
+### More scenarios
+
+```bash
+# Bus factor deep-dive
 oss-health-check microsoft/vscode --include-bus-factor
-```
 
-### Security Analysis
-```bash
+# Security audit for last quarter
 oss-health-check npm/cli --include-security --depth 3
-```
 
-### Community Health Check
-```bash
-oss-health-check nodejs/node --include-contributors --include-diversity
-```
-
-### Historical Analysis
-```bash
-oss-health-check webpack/webpack --depth 24 --save-data
+# Community engagement check
+oss-health-check nodejs/node --include-contributors
 ```
 
 ## 🔍 Health Metrics Explained

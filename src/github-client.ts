@@ -22,7 +22,7 @@ export interface Issue {
   state: string;
   createdAt: string;
   updatedAt: string;
-  closedAt: string;
+  closedAt: string | null;
   labels: string[];
   author: string;
   assignees: string[];
@@ -37,7 +37,7 @@ export interface PullRequest {
   state: string;
   createdAt: string;
   updatedAt: string;
-  closedAt: string;
+  closedAt: string | null;
   author: string;
   reviewers: string[];
   comments: number;
@@ -140,7 +140,7 @@ export class GitHubClient {
       createdAt: issue.created_at,
       updatedAt: issue.updated_at,
       closedAt: issue.closed_at,
-      labels: issue.labels?.map(label => typeof label === 'string' ? label : label.name) || [],
+      labels: (issue.labels ?? []).map(label => typeof label === 'string' ? label : label.name ?? '').filter((l): l is string => typeof l === 'string'),
       author: issue.user?.login || '',
       assignees: issue.assignees?.map(assignee => assignee.login) || [],
       comments: issue.comments
@@ -150,17 +150,20 @@ export class GitHubClient {
   async getPullRequests(owner: string, repo: string, months: number): Promise<PullRequest[]> {
     const since = new Date();
     since.setMonth(since.getMonth() - months);
-    const sinceISO = since.toISOString();
     
     const response = await this.octokit.rest.pulls.list({
       owner,
       repo,
-      since: sinceISO,
       state: 'all',
+      sort: 'updated',
+      direction: 'desc',
       per_page: 100
     });
 
-    return response.data.map(pr => ({
+    // Filter to only PRs within the analysis window
+    const filtered = response.data.filter(pr => new Date(pr.updated_at) >= since);
+
+    return filtered.map((pr: any) => ({
       id: pr.id,
       number: pr.number,
       title: pr.title,
@@ -168,14 +171,14 @@ export class GitHubClient {
       state: pr.state,
       createdAt: pr.created_at,
       updatedAt: pr.updated_at,
-      closedAt: pr.closed_at,
+      closedAt: pr.closed_at ?? null,
       author: pr.user?.login || '',
-      reviewers: pr.requested_reviewers?.map(reviewer => reviewer.login) || [],
-      comments: pr.comments,
-      additions: pr.additions,
-      deletions: pr.deletions,
-      files: pr.changed_files,
-      labels: pr.labels?.map(label => typeof label === 'string' ? label : label.name) || []
+      reviewers: pr.requested_reviewers?.map((reviewer: any) => reviewer.login) || [],
+      comments: pr.comments ?? 0,
+      additions: pr.additions ?? 0,
+      deletions: pr.deletions ?? 0,
+      files: pr.changed_files ?? 0,
+      labels: (pr.labels ?? []).map((label: any) => typeof label === 'string' ? label : label.name ?? '').filter((l: string): l is string => typeof l === 'string')
     }));
   }
 
@@ -187,7 +190,7 @@ export class GitHubClient {
     const response = await this.octokit.rest.repos.listCommits({
       owner,
       repo,
-      since,
+      since: sinceISO,
       per_page: 100
     });
 
@@ -210,20 +213,23 @@ export class GitHubClient {
     const response = await this.octokit.rest.repos.listContributors({
       owner,
       repo,
-      since: sinceISO,
       per_page: 100
     });
 
-    const contributors: Contributor[] = response.data.map(contributor => ({
-      login: contributor.login,
-      name: contributor.name || contributor.login,
-      contributions: contributor.contributions,
-      firstContribution: since,
-      lastContribution: since,
-      commits: 0,
-      prs: 0,
-      issues: 0
-    }));
+    const contributors: Contributor[] = [];
+    for (const c of response.data) {
+      if (typeof c.login !== 'string') continue;
+      contributors.push({
+        login: c.login,
+        name: c.login,
+        contributions: c.contributions,
+        firstContribution: sinceISO,
+        lastContribution: sinceISO,
+        commits: 0,
+        prs: 0,
+        issues: 0
+      });
+    }
 
     for (const contributor of contributors) {
       try {
@@ -231,11 +237,10 @@ export class GitHubClient {
           username: contributor.login
         });
         
-        contributor.email = userResponse.data.email;
+        contributor.email = userResponse.data.email || undefined;
         contributor.name = userResponse.data.name || contributor.login;
-      } catch (error) {
+      } catch {
         // User might not be accessible (private profile, deleted, etc.)
-        console.warn(`Warning: Could not fetch details for contributor ${contributor.login}`);
       }
     }
 

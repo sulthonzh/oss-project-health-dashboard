@@ -1,7 +1,11 @@
 import chalk from 'chalk';
-import { Table } from 'cli-table3';
-import { HealthData, HealthMetrics } from './github-client';
-import { format } from 'date-fns';
+import Table from 'cli-table3';
+import { HealthData } from './github-client';
+
+/** Format a date as e.g. "Jun 19, 2026" without external deps */
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
 
 export interface ReportOptions {
   showBenchmark: boolean;
@@ -36,7 +40,7 @@ export class DashboardReporter {
     const { metrics, repository, insights, recommendations } = healthData;
 
     console.log(chalk.bold.cyan(repository.fullName));
-    console.log(chalk.gray(`Analysis Date: ${format(new Date(healthData.analysisDate), 'PPP')}`));
+    console.log(chalk.gray(`Analysis Date: ${formatDate(new Date(healthData.analysisDate))}`));
     console.log(chalk.gray(`Analysis Depth: ${healthData.analysisDepth} months`));
     console.log();
 

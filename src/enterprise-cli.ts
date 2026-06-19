@@ -14,7 +14,7 @@ const program = new Command();
 program
   .name('oss-health-check-enterprise')
   .description('Enterprise-grade OSS project health analysis dashboard')
-  .version('1.1.0');
+  .version('1.2.0');
 
 program
   .command('multi-repo')
