@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-06-28
+
+### Added
+- ESLint flat config with typescript-eslint (zero errors, zero warnings)
+- c8 coverage reporting (`npm run test:coverage`)
+- Coverage: 94.76% statements, 78.08% branches, 95.23% functions
+- Lint script (`npm run lint`) wired to ESLint
+
+### Fixed
+- TypeScript tsconfig.json: added `types: ["node"]`, upgraded target to ES2022, removed deprecated `baseUrl`/`paths`/`experimentalDecorators`/`emitDecoratorMetadata`
+- Removed unused `DashboardReporter` import from enterprise-cli.ts
+- Removed unused `generator` variable in demo-cli.ts
+- Removed unused `criticalThreshold` variable in health-analyzer.ts
+- Removed unused `openIssues`/`openPRs` variables in health-analyzer.ts
+- Prefixed unused params with underscore (`_pullRequests`, `_healthData`, `_options`, `_previousScore`)
+- Fixed `prefer-const` violations in enterprise-cli.ts
+- Fixed uninitiated const declaration in enterprise-cli.ts
+
+### Changed
+- Updated `moduleResolution` from deprecated `node` to `node10` with `ignoreDeprecations: 6.0`
+- ESLint config relaxed `no-explicit-any` for CLI tool (commander options are inherently untyped)
+
 ## [1.2.0] - 2026-06-19
 
 ### Fixed

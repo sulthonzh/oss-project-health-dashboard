@@ -4,7 +4,6 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { GitHubClient } from './github-client';
 import { HealthAnalyzer } from './health-analyzer';
-import { DashboardReporter } from './dashboard-reporter';
 import { ConfigManager } from './config-manager';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -14,7 +13,7 @@ const program = new Command();
 program
   .name('oss-health-check-enterprise')
   .description('Enterprise-grade OSS project health analysis dashboard')
-  .version('1.2.0');
+  .version('1.3.0');
 
 program
   .command('multi-repo')
@@ -156,16 +155,13 @@ program
       const githubClient = new GitHubClient(config.getGitHubToken());
       const analyzer = new HealthAnalyzer(6);
 
-      let previousScore = 0;
-      let monitoringInterval: NodeJS.Timeout;
-
       console.log(chalk.green('🟢 Starting continuous monitoring...'));
       console.log(chalk.gray('Press Ctrl+C to stop monitoring'));
       console.log();
 
       await performHealthCheck(owner, repo, analyzer, githubClient, threshold, options);
 
-      monitoringInterval = setInterval(async () => {
+      const monitoringInterval = setInterval(async () => {
         try {
           await performHealthCheck(owner, repo, analyzer, githubClient, threshold, options);
         } catch (error) {
@@ -215,8 +211,8 @@ program
       const analyzer = new HealthAnalyzer(6);
 
       console.log(chalk.yellow('📊 Gathering benchmark data...'));
-       
-      const repoData = await githubClient.getRepository(owner, repo);
+      
+      const _repoData = await githubClient.getRepository(owner, repo);
       const benchmarkResults = await performBenchmarkAnalysis(owner, repo, githubClient, analyzer, options);
 
       console.log(chalk.blue('📋 Benchmark Report'));
@@ -439,7 +435,7 @@ async function performBenchmarkAnalysis(owner: string, repo: string, githubClien
   };
 }
 
-async function generateBenchmarkReport(benchmarkResults: any, options: any) {
+async function generateBenchmarkReport(benchmarkResults: any, _options: any) {
   console.log(`Target Project: ${benchmarkResults.target.repository?.name || 'Unknown'}`);
   console.log(`Category: ${benchmarkResults.category}`);
   console.log();

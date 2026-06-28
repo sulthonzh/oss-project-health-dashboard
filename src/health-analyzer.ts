@@ -135,7 +135,7 @@ export class HealthAnalyzer {
       .slice(0, Math.min(5, contributors.length));
 
     const totalCommits = commits.length;
-    const criticalThreshold = totalCommits * 0.3; // 30% threshold
+    const _criticalThreshold = totalCommits * 0.3; // 30% threshold
     const criticalContributors: string[] = [];
 
     let accumulatedCommits = 0;
@@ -164,7 +164,7 @@ export class HealthAnalyzer {
     };
   }
 
-  private calculateDiversity(contributors: Contributor[], pullRequests: PullRequest[]): DiversityMetrics {
+  private calculateDiversity(contributors: Contributor[], _pullRequests: PullRequest[]): DiversityMetrics {
     // Simplified diversity calculation
     // In a real implementation, this would use geographic data from GitHub API
     const newContributors = contributors.filter(c => {
@@ -202,9 +202,9 @@ export class HealthAnalyzer {
   }
 
   private calculateResponseTime(issues: Issue[], pullRequests: PullRequest[]): ResponseTimeMetrics {
-    const openIssues = issues.filter(issue => issue.state === 'open');
+    const _openIssues = issues.filter(issue => issue.state === 'open');
     const closedIssues = issues.filter(issue => issue.state === 'closed');
-    const openPRs = pullRequests.filter(pr => pr.state === 'open');
+    const _openPRs = pullRequests.filter(pr => pr.state === 'open');
     const mergedPRs = pullRequests.filter(pr => pr.state === 'closed');
 
     let totalResponseTime = 0;
@@ -404,7 +404,7 @@ export class HealthAnalyzer {
     return recommendations;
   }
 
-  async saveToDatabase(healthData: HealthData): Promise<void> {
+  async saveToDatabase(_healthData: HealthData): Promise<void> {
     // Implementation for saving to SQLite database
     // This would be implemented with proper database integration
     console.log('Saving analysis data to database...');

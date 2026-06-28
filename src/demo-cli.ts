@@ -9,7 +9,7 @@ const program = new Command();
 program
   .name('oss-health')
   .description('OSS Project Health Dashboard - Analyze open source project health')
-  .version('1.2.0');
+  .version('1.3.0');
 
 program
   .command('demo')
@@ -21,7 +21,6 @@ program
     console.log('');
     
     try {
-      const generator = new DemoDataGenerator();
       
       console.log(chalk.yellow('📊 Generating demo data...'));
        
