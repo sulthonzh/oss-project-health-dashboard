@@ -31,14 +31,16 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^5.0.0",
-    "commander": "^11.0.0",
     "cli-table3": "^0.6.3",
+    "commander": "^11.0.0",
     "octokit": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "@vitest/coverage-v8": "^4.1.9",
     "tsup": "^7.2.0",
-    "typescript": "^6.0.0"
+    "typescript": "^6.0.0",
+    "vitest": "^4.1.9"
   },
   "engines": {
     "node": ">=18.0.0"
