@@ -34,7 +34,7 @@
     "chalk": "^5.0.0",
     "cli-table3": "^0.6.3",
     "commander": "^11.0.0",
-    "octokit": "^3.0.0"
+    "octokit": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
