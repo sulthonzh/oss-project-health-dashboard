@@ -15,7 +15,8 @@
     "prepare": "npm run build",
     "enterprise": "node dist/enterprise-cli.js",
     "demo": "node dist/demo-cli.js",
-    "test:standalone": "npx tsc --outDir dist-test --module commonjs --target ES2020 --esModuleInterop --moduleResolution node src/config-manager.ts src/health-analyzer.ts && node --test test/test.mjs && rm -rf dist-test"
+    "test:standalone": "npx tsc --outDir dist-test --module commonjs --target ES2020 --esModuleInterop --moduleResolution node src/config-manager.ts src/health-analyzer.ts && node --test test/test.mjs && rm -rf dist-test",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "oss",
