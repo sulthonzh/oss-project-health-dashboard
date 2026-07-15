@@ -405,8 +405,7 @@ export class HealthAnalyzer {
   }
 
   async saveToDatabase(_healthData: HealthData): Promise<void> {
-    // Implementation for saving to SQLite database
-    // This would be implemented with proper database integration
-    console.log('Saving analysis data to database...');
+    // Stub: database integration not yet implemented
+    // Intentionally a no-op until SQLite persistence is added
   }
 }
