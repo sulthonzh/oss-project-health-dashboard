@@ -9,8 +9,8 @@
   "scripts": {
     "build": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts src/config-manager.ts src/health-analyzer.ts --format cjs --external chalk,commander,octokit,cli-table3",
     "dev": "tsup src/index.ts src/enterprise-cli.ts src/demo-cli.ts src/config-manager.ts src/health-analyzer.ts --format cjs --external chalk,commander,octokit,cli-table3 --watch",
-    "test": "node --test test/test.mjs",
-    "test:coverage": "c8 node --test test/test.mjs",
+    "test": "node --test test/test.mjs test/coverage-gaps.test.mjs",
+    "test:coverage": "c8 node --test test/test.mjs test/coverage-gaps.test.mjs",
     "lint": "eslint src/",
     "prepare": "npm run build",
     "enterprise": "node dist/enterprise-cli.js",
