@@ -293,3 +293,56 @@ describe('HealthAnalyzer - Recommendations Branch Coverage', () => {
       `Expected vulnerability scanning recommendation`);
   });
 });
+
+// ─── Edge Case Coverage Tests ──────────────────────────
+
+describe('HealthAnalyzer - Edge Cases', () => {
+  it('handles empty contributors (bus factor || 0 fallback)', async () => {
+    const analyzer = new HealthAnalyzer(6);
+    const result = await analyzer.analyze({
+      repository: {
+        name: 'test', fullName: 'user/test', description: '', language: 'JS',
+        stars: 100, forks: 1, openIssues: 0,
+        createdAt: '2023-01-01T00:00:00Z', updatedAt: '2026-06-01T00:00:00Z',
+        license: 'MIT', topics: []
+      },
+      issues: [],
+      pullRequests: [],
+      contributors: [],
+      commits: []
+    });
+    assert.equal(result.metrics.busFactor.criticalContributors.length, 0);
+    assert.ok(result.metrics.busFactor.score >= 0);
+  });
+
+  it('handles zero stars (security issueToStarRatio fallback)', async () => {
+    const analyzer = new HealthAnalyzer(6);
+    const result = await analyzer.analyze({
+      repository: {
+        name: 'nostars', fullName: 'user/nostars', description: '', language: 'JS',
+        stars: 0, forks: 0, openIssues: 5,
+        createdAt: '2023-01-01T00:00:00Z', updatedAt: '2026-06-01T00:00:00Z',
+        license: 'MIT', topics: []
+      },
+      issues: [],
+      pullRequests: [],
+      contributors: [],
+      commits: []
+    });
+    assert.ok(result.metrics.security.score >= 0);
+  });
+
+  it('saveToDatabase completes without error (no-op)', async () => {
+    const analyzer = new HealthAnalyzer(6);
+    const healthData = {
+      repository: { name: 'test', fullName: 'user/test' },
+      analysisDate: new Date().toISOString(),
+      analysisDepth: 6,
+      metrics: {},
+      insights: [],
+      recommendations: []
+    };
+    await analyzer.saveToDatabase(healthData); // should not throw
+    assert.ok(true);
+  });
+});

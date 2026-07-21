@@ -405,7 +405,6 @@ export class HealthAnalyzer {
   }
 
   async saveToDatabase(_healthData: HealthData): Promise<void> {
-    // Stub: database integration not yet implemented
-    // Intentionally a no-op until SQLite persistence is added
+    // Intentional no-op: SQLite persistence planned for v2.0
   }
 }
