@@ -1,19 +1,26 @@
 # oss-project-health-dashboard - Audit Status
 
 ## Last Audited
-2026-07-18
+2026-07-22
 
 ## Audit Findings
 
 ### Status: ✅ EXCEPTIONAL
 
-**Tests:** 31/31 GREEN ✅ (17 original + 14 coverage gap tests, node --test, ~380ms)
+**Tests:** 34/34 GREEN ✅ (17 original + 14 coverage gap + 3 edge-case tests, node --test, ~565ms)
 **TypeScript:** Zero errors (strict mode, `tsc --noEmit` clean)
 **ESLint:** Zero errors, zero warnings
-**Coverage:** 99.17% statements, 91.17% branches, 97.05% functions
+**Coverage:** 99.44% statements, 93.45% branches, 100% functions
 **TODO/FIXME:** Zero in shipped code
 
-### Fixes Applied This Cycle (2026-07-18)
+### Fixes Applied This Cycle (2026-07-22)
+1. **Branch coverage 91.17% → 93.45%** — Added 3 edge-case tests: empty contributors (|| 0 fallback), zero stars (issueToStarRatio fallback), saveToDatabase no-op
+2. **Function coverage 97.05% → 100%** — saveToDatabase now covered
+3. **Fixed version mismatch** — CLI `--version` reported 1.2.0, now correctly reports 1.3.0
+4. **Created CHANGELOG.md** — Keep a Changelog format
+5. **Clarified saveToDatabase** — removed "not yet implemented" comment, documented as intentional no-op
+
+### Prior Fixes (2026-07-18)
 1. **Branch coverage 78.66% → 91.17%** — Added 14 coverage gap tests targeting:
    - ConfigManager: invalid JSON config file catch block (falls back to defaults), saveConfig error handling (EISDIR graceful catch)
    - HealthAnalyzer bus factor: multiple critical contributors crossing 70% threshold, low risk level (maxRatio < 0.3)
