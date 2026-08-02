@@ -1,19 +1,26 @@
 # oss-project-health-dashboard - Audit Status
 
 ## Last Audited
-2026-07-31
+2026-08-03
 
 ## Audit Findings
 
 ### Status: ✅ EXCEPTIONAL
 
-**Tests:** 51/51 GREEN ✅ (17 original + 14 coverage gap round 1 + 3 edge-case + 17 coverage gap round 2, node --test, ~1.5s)
+**Tests:** 51 node tests + 19 vitest tests = 70 total, ALL GREEN ✅
 **TypeScript:** Zero errors (strict mode, `tsc --noEmit` clean)
 **ESLint:** Zero errors, zero warnings
 **Coverage:** 99.44% statements, 93.57% branches, 100% functions
 **TODO/FIXME:** Zero in shipped code
 
-### Fixes Applied This Cycle (2026-07-31)
+### Fixes Applied This Cycle (2026-08-03)
+1. **Fixed TS v7 breakage** — Dependabot bumped TypeScript to v7.0, but typescript-eslint v8.62 only supports `<6.1.0`. Pinned `typescript: ^6.0.0`.
+2. **Fixed chalk v6 ESM breakage** — chalk v6 is ESM-only but project uses CommonJS module system. Pinned `chalk: ^5.4.0` (last CJS-compatible major).
+3. **Fixed tsconfig deprecation** — Added `ignoreDeprecations: "6.0"` for `moduleResolution: node` in TS 6.x.
+4. **Fixed test bug** — `healthScore(healthScore)` self-reference in types.test.ts:479 (variable name shadowed function name). Fixed to `healthScore(minimalHealthScore)`.
+5. **ESLint config** — Added `test-basic.js` to ignores (legacy script with require-imports).
+
+### Previous Cycle (2026-07-31)
 1. **Branch coverage 91.58% → 93.57%** — Added 17 targeted tests in `test/coverage-gaps-2.test.mjs`:
    - ConfigManager `getGitHubToken()` fallback chain: config token → env var → empty string (3 tests, covers dist line 48)
    - ConfigManager `setGitHubToken()`: set+persist, overwrite existing (2 tests, covers dist lines 52-53)
