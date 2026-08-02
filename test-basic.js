@@ -12,8 +12,8 @@ console.log('✅ README.md documentation complete');
 console.log();
 
 // Show project stats
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const stats = {
   sourceFiles: 0,
@@ -41,7 +41,7 @@ countLines('./src');
 try {
   const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
   stats.dependencies = Object.keys(pkg.dependencies || {}).length + Object.keys(pkg.devDependencies || {}).length;
-} catch (e) {
+} catch (_e) {
   console.log('⚠️ Could not read package.json');
 }
 

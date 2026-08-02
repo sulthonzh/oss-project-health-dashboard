@@ -476,7 +476,7 @@ describe('Type Definitions', () => {
         }
       };
 
-      expect(healthScore(healthScore)).toBe(true);
+      expect(healthScore(minimalHealthScore)).toBe(true);
     });
 
     it('should handle maximum valid data', () => {
