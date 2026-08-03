@@ -131,7 +131,7 @@ export class GitHubClient {
       per_page: 100
     });
 
-    return response.data.map(issue => ({
+    return response.data.map((issue: any) => ({
       id: issue.id,
       number: issue.number,
       title: issue.title,
@@ -140,9 +140,9 @@ export class GitHubClient {
       createdAt: issue.created_at,
       updatedAt: issue.updated_at,
       closedAt: issue.closed_at,
-      labels: (issue.labels ?? []).map(label => typeof label === 'string' ? label : label.name ?? '').filter((l): l is string => typeof l === 'string'),
+      labels: (issue.labels ?? []).map((label: any) => typeof label === 'string' ? label : label.name ?? '').filter((l: any): l is string => typeof l === 'string'),
       author: issue.user?.login || '',
-      assignees: issue.assignees?.map(assignee => assignee.login) || [],
+      assignees: issue.assignees?.map((assignee: any) => assignee.login) || [],
       comments: issue.comments
     }));
   }
@@ -161,7 +161,7 @@ export class GitHubClient {
     });
 
     // Filter to only PRs within the analysis window
-    const filtered = response.data.filter(pr => new Date(pr.updated_at) >= since);
+    const filtered = response.data.filter((pr: any) => new Date(pr.updated_at) >= since);
 
     return filtered.map((pr: any) => ({
       id: pr.id,
@@ -194,7 +194,7 @@ export class GitHubClient {
       per_page: 100
     });
 
-    return response.data.map(commit => ({
+    return response.data.map((commit: any) => ({
       sha: commit.sha,
       message: commit.commit.message,
       author: commit.author?.login || commit.commit.author?.name || '',
